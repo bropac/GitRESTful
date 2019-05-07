@@ -1,5 +1,5 @@
 <?php
-    include 'connectToDB.php';
+    include 'connectionToDB.php';
     include 'user.php';
     
     $database = new Database();
@@ -15,7 +15,6 @@
                 (
                     "status" => true,
                     "message" => "Registrato con successo !",
-                    "id" => $user->id,
                     "username" => $user->username
                 );
     }

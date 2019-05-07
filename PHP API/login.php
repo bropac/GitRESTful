@@ -1,15 +1,16 @@
 <?php
-    include 'connectToDB.php';
+    include 'connectionToDB.php';
     include 'user.php';
 
     $database = new Database();
-    $db = $database->getConnection();
+    $db = $database->connect();
     $user = new User($db);
     
-    if(isset($_GET['username']) && isset($_GET['password']))
+    if(isset($_POST['username']) && isset($_POST['password']))
     {
-        $user->username = $_GET['username'];
-        $user->password = $_GET['password'];
+        $user->username = $_POST['username'];
+        $user->password = $_POST['password'];
+        
     }
     else
     {
@@ -24,7 +25,6 @@
                 (
                     "status" => true,
                     "message" => "Accesso eseguito con successo !",
-                    "id" => $row['id'],
                     "username" => $row['username']
                 );
     }
@@ -33,7 +33,7 @@
         $user_arr=array
                 (
                     "status" => false,
-                    "message" => "Invalid Username or Password!",
+                    "message" => "Username o Password errati !",
                 );
     }
     print_r(json_encode($user_arr));

@@ -2,16 +2,15 @@
     class User
     {
         private $connectionDB;
-        private $table = "user";
+        private $table = "users";
 
         public $id;
         public $username;
         public $password;
-        public $created;
 
         public function __construct($db)
         {
-            $connectionDB = $db;
+            $this->connectionDB = $db;
         }
 
         function signup()
@@ -21,17 +20,12 @@
                 return false;
             }
 
-            $stmt = $this->connectionDB->prepare('insert into '.$this->table.' values (?,?,?) ');
+            $stmt = $this->connectionDB->prepare('insert into '.$this->table.' values (?,md5(?)) ');
 
-            $username=htmlspecialchars(strip_tags($username));
-            $password=htmlspecialchars(strip_tags($password));
-            $created=htmlspecialchars(strip_tags($created));
-
-            $stmt->bindParam('sss', $username,$password,$created);
+            $stmt->bind_param('ss',$this->username,$this->password);
 
             if($stmt->execute())
             {
-                $id = $this->connectionDB->lastInsertId();
                 return true;
             }
             return false;
@@ -39,7 +33,7 @@
 
         function isAlreadyExist()
         {
-            if($this->connectionDB->execute('select * from '.$this->table.' where username="'.$this->username.'";')->num_rows > 0)
+            if($this->connectionDB->query('select * from '.$this->table.' where username="'.$this->username.'";')->num_rows > 0)
             {
                 return true;
             }
@@ -51,7 +45,7 @@
 
         function login()
         {
-            return $this->connectionDB->execute('select id,username,password,created from '.$this->table.' where username='.$this->username.' and password='.$this->password.';');
+            return $this->connectionDB->query('select * from '.$this->table.' where username="'.$this->username.'" and password=md5("'.$this->password.'");');
         }
     }
 ?>
